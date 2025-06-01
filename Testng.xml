@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="AutomationPanda">
+
+	<listeners>
+		<listener class-name="Utilities.Reporting" />
+	</listeners>
+
+
+	<test name="Automation Test">
+		<parameter name="browser" value="chrome" />
+		<classes>
+<!--		<class name="TestCases.AutomationPanda" />-->
+			<!--	<class name="TestCases.AutomationPanda" />  -->
+<!--                <class name="TestCases.FlipkartTest" />-->
+<!--		  		<class name="TestCases.EmpDetails" />-->
+		  		<class name="TestCases.FlightRoundTrip" />
+<!--					<class name="TestCases.TestNGProgram" />-->
+
+                        <!--  <class name="com.inetbanking.testCases.TC_LoginDDT_002" />-->
+		<!-- 	<class name="com.inetbanking.testCases.TC_AddCustomerTest_003" />  -->
+
+		</classes>
+
+	</test>
+
+</suite>

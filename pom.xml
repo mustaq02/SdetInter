@@ -41,11 +41,7 @@
           <version>3.1.2</version>
       </dependency>
 
-      <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-io</artifactId>
-          <version>1.3.2</version>
-      </dependency>
+
       <dependency>
           <groupId>org.sikuli</groupId>
           <artifactId>sikuli-api</artifactId>
@@ -61,6 +57,7 @@
           <artifactId>commons-io</artifactId>
           <version>1.3.2</version>
       </dependency>
+
       <dependency>
           <groupId>org.sikuli</groupId>
           <artifactId>sikuli-api</artifactId>
@@ -82,6 +79,12 @@
           <groupId>org.apache.poi</groupId>
           <artifactId>poi-ooxml</artifactId>
           <version>5.0.0</version>
+      </dependency>
+
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.11.0</version> <!-- Or latest stable version -->
       </dependency>
 
   </dependencies>

@@ -11,15 +11,10 @@
 	<test name="Automation Test">
 		<parameter name="browser" value="chrome" />
 		<classes>
-<!--		<class name="TestCases.AutomationPanda" />-->
-			<!--	<class name="TestCases.AutomationPanda" />  -->
-<!--                <class name="TestCases.FlipkartTest" />-->
-<!--		  		<class name="TestCases.EmpDetails" />-->
+
+<!--		  		<class name="TestCases.EmpDetailsFromExcel" />-->
 		  		<class name="TestCases.FlightRoundTrip" />
 <!--					<class name="TestCases.TestNGProgram" />-->
-
-                        <!--  <class name="com.inetbanking.testCases.TC_LoginDDT_002" />-->
-		<!-- 	<class name="com.inetbanking.testCases.TC_AddCustomerTest_003" />  -->
 
 		</classes>
 

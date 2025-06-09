@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-public class EmpDetails {
+public class EmpDetailsFromExcel {
     public static void main(String[] args) throws FileNotFoundException {
 //        String excelFilePath = "C:\\Users\\Dell\\IdeaProjects\\EmployeeDetails.xlsx";
         String excelFilePath = System.getProperty("user.dir") + "\\src\\test\\Resources\\EmployeeDetails.xlsx";

@@ -61,6 +61,8 @@ public class Reporting implements ITestListener {
 
             testThread.get().pass("Test Passed")
                     .addScreenCaptureFromPath(screenshotPath);
+            logger.info("Test Passed: " + result.getMethod().getMethodName()
+                    + " | Screenshot: " + screenshotPath);
         } catch (IOException e) {
             testThread.get().pass("Test Passed (screenshot unavailable)");
         }

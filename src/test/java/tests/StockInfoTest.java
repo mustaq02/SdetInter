@@ -9,11 +9,15 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+//import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import utils.Base;
@@ -51,40 +55,33 @@ public class StockInfoTest {
     }
 
     public static Logger logger;
+
+
     @BeforeMethod
-    public void setup() {
-//        WebDriverManager.chromedriver().setup();
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--remote-allow-origins=*");
-//        options.addArguments("start-maximized");
-//        options.addArguments("disable-infobars");
-//        options.addArguments("--disable-extensions");
-//        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-//                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-//                "Chrome/114.0.5735.90 Safari/537.36");
-//
-//        WebDriver driver = new ChromeDriver(options);
-//        String driverHomePath = System.getProperty("user.dir");
-//        String driverFilePath = driverHomePath + File.separator + "src" + File.separator + "test" + File.separator + "chromedriver.exe";
-//        System.setProperty("webdriver.chrome.driver", driverFilePath);
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--remote-allow-origins=*");
-//        driver = new ChromeDriver();
+    @Parameters("browser")
+    public void setup(@Optional("chrome")String browser) {
 
-        WebDriverManager.chromedriver().setup();
+        if (browser.equalsIgnoreCase("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--remote-allow-origins=*");
+            options.addArguments("--disable-blink-features=AutomationControlled");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-gpu");
+            options.addArguments("start-maximized");
+            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                    "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                    "Chrome/114.0.5735.90 Safari/537.36");
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--disable-blink-features=AutomationControlled");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-gpu");
-        options.addArguments("start-maximized");
-        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/114.0.5735.90 Safari/537.36");
-
-        driver = new ChromeDriver(options);
+            driver = new ChromeDriver(options);
+        } else if (browser.equalsIgnoreCase("edge")) {
+//            WebDriverManager.edgedriver().setup();
+            System.setProperty("webdriver.edge.driver", System.getProperty("user.dir")
+                    + File.separator +"src" + File.separator + "test" + File.separator
+                    + "msedgedriver.exe");
+            driver = new EdgeDriver();
+          }
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
 
@@ -93,7 +90,7 @@ public class StockInfoTest {
     @Test
     @Parameters({"stockName", "purchasePrice"})
     public void verifyStockInfo(String stockName, double purchasePrice) throws IOException, InterruptedException {
-        test = extent.createTest("Verify Stock Info for " + stockName);
+//        test = extent.createTest("Verify Stock Info for " + stockName);
         log.info("Opening NSE Website");
         driver.get("https://www.nseindia.com/");
 
@@ -120,16 +117,22 @@ public class StockInfoTest {
         ScreenshotUtil.capture(driver, "Before enter the text in seach box");
         searchBox.sendKeys(stockName);
         ScreenshotUtil.capture(driver, "After enter the text in seach box");
+        Thread.sleep(3000);
+        searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.ENTER);
 
         log.info("Searching stock: " + stockName);
 
-  /*      // Extract stock info (these locators may need adjustment using DevTools/Inspect)
-        String priceText = driver.findElement(By.cssSelector(".trade_info .value")).getText();
+//        Thread.sleep(8000);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//aside[contains(@class,'priceinfo')][1]//span[@id='quoteLtp']")));
+        // Extract stock info (these locators may need adjustment using DevTools/Inspect)
+        String priceText = driver.findElement(By.xpath("//aside[contains(@class,'priceinfo')][1]//span[@id='quoteLtp']")).getText();
         double currentPrice = Double.parseDouble(priceText.replace(",", "").trim());
 
-        String high52Text = driver.findElement(By.xpath("//td[contains(text(),'52 Wk High')]/following-sibling::td")).getText();
-        String low52Text = driver.findElement(By.xpath("//td[contains(text(),'52 Wk Low')]/following-sibling::td")).getText();
+        String high52Text = driver.findElement(By.xpath("//span[contains(text(),'52 Week High')]/parent::td/following-sibling::td")).getText();
+        String low52Text = driver.findElement(By.xpath("//span[contains(text(),'52 Week Low')]/parent::td/following-sibling::td")).getText();
 
         log.info("Current Price: " + currentPrice);
         log.info("52 Week High: " + high52Text);
@@ -137,18 +140,22 @@ public class StockInfoTest {
 
         // Screenshot after search
         ScreenshotUtil.capture(driver, "after_search");
-
+//        double purchasePriceVal = Double.parseDouble(purchasePrice.replace(",", "").trim());
         // Profit/Loss
         if (currentPrice > purchasePrice) {
             log.info("Stock is in PROFIT");
-            test.pass("Stock is in PROFIT. Current: " + currentPrice + " | Purchase: " + purchasePrice);
+            ScreenshotUtil.capture(driver, "Stock is in PROFIT");
+            log.info("Stock is in PROFIT. Current: " + currentPrice + " | Purchase: " + purchasePrice);
+//            Assert.assertTrue(true,"Stock is in PROFIT. Current: " + currentPrice + " | Purchase: " + purchasePrice);
         } else {
             log.info("Stock is in LOSS");
-            test.fail("Stock is in LOSS. Current: " + currentPrice + " | Purchase: " + purchasePrice);
+            ScreenshotUtil.capture(driver, "Stock is in LOSS");
+            log.info("Stock is in LOSS. Current: " + currentPrice + " | Purchase: " + purchasePrice);
+//            Assert.assertTrue(false,"Stock is in LOSS. Current: " + currentPrice + " | Purchase: " + purchasePrice);
         }
 
         // Assert data is not null
-        Assert.assertTrue(currentPrice > 0, "Price not found!");   */
+        Assert.assertTrue(currentPrice > 0, "Price not found!");
     }
 
     @AfterMethod
